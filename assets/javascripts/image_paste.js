@@ -46,7 +46,11 @@ function preparePasteEvents() {
                         var timestamp = Math.round(+new Date()/1000);
                         var name = 'screenshot_'+addFile.nextAttachmentId+'_'+timestamp+'_'+e.dataTransfer.files[file].name.replace(/[ !"#%&\'()*:<=>?\[\\\]|]/g, '_');
                         var blob = e.dataTransfer.files[file].slice();
-                        blob.name = name;
+                        if (Object.defineProperty) {
+                            Object.defineProperty(blob, 'name', { value: name });
+                        } else {
+                            blob.name = name;
+                        }
                         uploadAndAttachFiles([blob], $('input:file.file_selector'));
                         pasteImageName(this, name);
 
@@ -95,7 +99,11 @@ function preparePasteEvents() {
 
                 /* Upload pasted image */
                 var blob = clipboardData.items[file].getAsFile();
-                blob.name = name; /* Not very elegent, but we pretent the Blob is actually a File */
+                if (Object.defineProperty) {
+                    Object.defineProperty(blob, 'name', { value: name });
+                } else {
+                    blob.name = name;
+                }
                 uploadAndAttachFiles([blob], fileinput);
 
                 /* Inset text into input */
